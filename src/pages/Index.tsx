@@ -7,6 +7,8 @@ import { Card } from '@/components/ui/card';
 import { Train, MapPin, Activity } from 'lucide-react';
 
 const Index = () => {
+  console.log('Index component rendering...');
+  
   const [layers, setLayers] = useState({
     majorStations: true,
     junctionStations: true,
