@@ -41,16 +41,10 @@ const createStationIcon = (type: string) => {
   });
 };
 
-const RailwayMap: React.FC = () => {
-  const center: [number, number] = [20.5937, 78.9629]; // Geographic center of India
-  
+// Component to render markers within the map context
+const MapContent: React.FC = () => {
   return (
-    <MapContainer
-      center={center}
-      zoom={5}
-      className="w-full h-full rounded-lg shadow-lg"
-      style={{ minHeight: '600px' }}
-    >
+    <>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -95,6 +89,21 @@ const RailwayMap: React.FC = () => {
           </Popup>
         </Marker>
       ))}
+    </>
+  );
+};
+
+const RailwayMap: React.FC = () => {
+  const center: [number, number] = [20.5937, 78.9629]; // Geographic center of India
+  
+  return (
+    <MapContainer
+      center={center}
+      zoom={5}
+      className="w-full h-full rounded-lg shadow-lg"
+      style={{ minHeight: '600px' }}
+    >
+      <MapContent />
     </MapContainer>
   );
 };
