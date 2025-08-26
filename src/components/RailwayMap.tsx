@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -41,70 +40,75 @@ const createStationIcon = (type: string) => {
   });
 };
 
-// Component to render markers within the map context
-const MapContent: React.FC = () => {
-  return (
-    <>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      
-      {/* Major Stations */}
-      {majorStations.map((station) => (
-        <Marker
-          key={station.id}
-          position={[station.lat, station.lng]}
-          icon={createStationIcon(station.type)}
-        >
-          <Popup className="railway-popup">
-            <div className="text-sm">
-              <h3 className="font-semibold text-primary">{station.name}</h3>
-              <p className="text-muted-foreground">Station Code: {station.id}</p>
-              <p className="text-muted-foreground">Zone: {station.zone}</p>
-              <span className="inline-block px-2 py-1 mt-1 text-xs bg-signal-red text-white rounded">
-                Major Terminal
-              </span>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-      
-      {/* Junction Stations */}
-      {junctionStations.map((station) => (
-        <Marker
-          key={station.id}
-          position={[station.lat, station.lng]}
-          icon={createStationIcon(station.type)}
-        >
-          <Popup className="railway-popup">
-            <div className="text-sm">
-              <h3 className="font-semibold text-primary">{station.name}</h3>
-              <p className="text-muted-foreground">Station Code: {station.id}</p>
-              <p className="text-muted-foreground">Zone: {station.zone}</p>
-              <span className="inline-block px-2 py-1 mt-1 text-xs bg-railway-blue text-white rounded">
-                Junction
-              </span>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </>
-  );
-};
-
 const RailwayMap: React.FC = () => {
-  const center: [number, number] = [20.5937, 78.9629]; // Geographic center of India
-  
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<L.Map | null>(null);
+
+  useEffect(() => {
+    if (!mapContainer.current) return;
+
+    // Initialize map
+    map.current = L.map(mapContainer.current).setView([20.5937, 78.9629], 5);
+
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map.current);
+
+    // Add major stations
+    majorStations.forEach((station) => {
+      if (map.current) {
+        const marker = L.marker([station.lat, station.lng], {
+          icon: createStationIcon(station.type)
+        }).addTo(map.current);
+
+        marker.bindPopup(`
+          <div class="text-sm">
+            <h3 class="font-semibold text-primary mb-1">${station.name}</h3>
+            <p class="text-muted-foreground text-xs">Station Code: ${station.id}</p>
+            <p class="text-muted-foreground text-xs">Zone: ${station.zone}</p>
+            <span class="inline-block px-2 py-1 mt-2 text-xs bg-red-600 text-white rounded">
+              Major Terminal
+            </span>
+          </div>
+        `);
+      }
+    });
+
+    // Add junction stations
+    junctionStations.forEach((station) => {
+      if (map.current) {
+        const marker = L.marker([station.lat, station.lng], {
+          icon: createStationIcon(station.type)
+        }).addTo(map.current);
+
+        marker.bindPopup(`
+          <div class="text-sm">
+            <h3 class="font-semibold text-primary mb-1">${station.name}</h3>
+            <p class="text-muted-foreground text-xs">Station Code: ${station.id}</p>
+            <p class="text-muted-foreground text-xs">Zone: ${station.zone}</p>
+            <span class="inline-block px-2 py-1 mt-2 text-xs bg-blue-600 text-white rounded">
+              Junction
+            </span>
+          </div>
+        `);
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      if (map.current) {
+        map.current.remove();
+      }
+    };
+  }, []);
+
   return (
-    <MapContainer
-      center={center}
-      zoom={5}
-      className="w-full h-full rounded-lg shadow-lg"
+    <div 
+      ref={mapContainer} 
+      className="w-full h-full rounded-lg shadow-lg" 
       style={{ minHeight: '600px' }}
-    >
-      <MapContent />
-    </MapContainer>
+    />
   );
 };
 
