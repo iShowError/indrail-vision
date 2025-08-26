@@ -52,6 +52,23 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Railway-themed colors
+				railway: {
+					blue: 'hsl(var(--railway-blue))',
+					'blue-light': 'hsl(var(--railway-blue-light))',
+					'blue-dark': 'hsl(var(--railway-blue-dark))'
+				},
+				signal: {
+					orange: 'hsl(var(--signal-orange))',
+					'orange-light': 'hsl(var(--signal-orange-light))',
+					red: 'hsl(var(--signal-red))',
+					green: 'hsl(var(--signal-green))'
+				},
+				steel: {
+					DEFAULT: 'hsl(var(--steel))',
+					light: 'hsl(var(--steel-light))',
+					dark: 'hsl(var(--steel-dark))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
